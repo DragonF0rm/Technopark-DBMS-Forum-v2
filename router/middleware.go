@@ -58,9 +58,11 @@ func init() {
 func StartTransmitStats() {
 	ticker := time.Tick(5 * time.Second)
 	for _ = range ticker {
+		mu.Lock()
 		for id, stats := range totalStats {
 			fmt.Printf("%s - %d hits  %f sec \n", id, int(stats.TotalRequests), stats.AverageTime)
 		}
+		mu.Unlock()
 		fmt.Println("*****")
 	}
 }

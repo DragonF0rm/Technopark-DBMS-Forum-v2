@@ -1595,6 +1595,24 @@ ALTER SEQUENCE public."Votes_id_seq" OWNED BY public."Votes".id;
 
 
 --
+-- Name: rec; Type: TABLE; Schema: public; Owner: maxim
+--
+
+CREATE TABLE public.rec (
+    id bigint,
+    "author-id" bigint,
+    created timestamp with time zone,
+    "forum-id" bigint,
+    message character varying(2044),
+    slug character varying(2044),
+    title character varying(2044),
+    votes integer
+);
+
+
+ALTER TABLE public.rec OWNER TO maxim;
+
+--
 -- Name: Forums id; Type: DEFAULT; Schema: public; Owner: maxim
 --
 
@@ -1670,38 +1688,46 @@ COPY public."Votes" (id, voice, "thread-id", "user-id") FROM stdin;
 
 
 --
+-- Data for Name: rec; Type: TABLE DATA; Schema: public; Owner: maxim
+--
+
+COPY public.rec (id, "author-id", created, "forum-id", message, slug, title, votes) FROM stdin;
+\.
+
+
+--
 -- Name: Forum_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Forum_id_seq"', 18452, true);
+SELECT pg_catalog.setval('public."Forum_id_seq"', 18532, true);
 
 
 --
 -- Name: Post_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Post_id_seq"', 18178485, true);
+SELECT pg_catalog.setval('public."Post_id_seq"', 24178485, true);
 
 
 --
 -- Name: Thread_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Thread_id_seq"', 317187, true);
+SELECT pg_catalog.setval('public."Thread_id_seq"', 357187, true);
 
 
 --
 -- Name: Users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Users_id_seq"', 96654, true);
+SELECT pg_catalog.setval('public."Users_id_seq"', 100654, true);
 
 
 --
 -- Name: Votes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Votes_id_seq"', 2695627, true);
+SELECT pg_catalog.setval('public."Votes_id_seq"', 3095627, true);
 
 
 --
@@ -1800,6 +1826,13 @@ CREATE UNIQUE INDEX idx_forum_ci_slug ON public."Forums" USING btree (lower((slu
 
 
 --
+-- Name: idx_forum_slug_by_id; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_forum_slug_by_id ON public."Forums" USING btree (id, slug);
+
+
+--
 -- Name: idx_post_author_id; Type: INDEX; Schema: public; Owner: maxim
 --
 
@@ -1818,6 +1851,13 @@ CREATE INDEX idx_post_forum_id ON public."Posts" USING btree ("forum-id");
 --
 
 CREATE INDEX idx_post_path ON public."Posts" USING btree (path);
+
+
+--
+-- Name: idx_post_root_post; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_post_root_post ON public."Posts" USING btree ((((path || id))[2]));
 
 
 --
@@ -1867,6 +1907,13 @@ CREATE UNIQUE INDEX idx_user_email ON public."Users" USING btree (lower((email):
 --
 
 CREATE UNIQUE INDEX idx_user_nickname ON public."Users" USING btree (lower((nickname)::text));
+
+
+--
+-- Name: idx_user_nickname_by_id; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_user_nickname_by_id ON public."Users" USING btree (id, nickname);
 
 
 --
